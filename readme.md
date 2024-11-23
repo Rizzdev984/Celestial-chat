@@ -28,14 +28,14 @@ Sebelum memulai, pastikan Anda memiliki perangkat berikut:
 
 ### Langkah 1: Clone Repository
 
-Clone repositori ini ke mesin lokal Anda:
+**Clone repositori ini ke mesin lokal Anda:**
 
 ```bash
-git clone https://github.com/username/celestial-ai-chat.git
+git clone https://github.com/Rizzdev984/Celestial-chat.git
 cd celestial-ai-chat
 ```
 
-Struktur Directori Proyek
+**Struktur Directori Proyek:**
 
 ```graphql
 celestial-ai-chat/
@@ -52,7 +52,7 @@ celestial-ai-chat/
 
 - License Di Hasilkan Oleh *MIT License*
 
-# Kontak
+# *Kontak*
 Creator: Celestial
 Email: CelestialDev@gmail.com
 GitHub: https://github.com/Rizzdev984
