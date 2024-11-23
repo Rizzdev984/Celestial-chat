@@ -54,8 +54,11 @@ celestial-ai-chat/
 
 # *Kontak*
 Creator: Celestial
+
 Email: CelestialDev@gmail.com
+
 GitHub: https://github.com/Rizzdev984
+
 Jika Anda memiliki pertanyaan atau ingin berkolaborasi, jangan ragu untuk menghubungi kami!
 
 
