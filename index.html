@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celestial AI Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1729 0%, #1a1f35 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #00ff88, #00a1ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .model-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .model-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .model-btn.active {
+            background: linear-gradient(45deg, #00ff88, #00a1ff);
+            transform: scale(1.05);
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            position: relative;
+            animation: messageAppear 0.5s ease forwards;
+        }
+
+        .user-message {
+            background: rgba(0, 161, 255, 0.2);
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background: rgba(0, 255, 136, 0.2);
+            align-self: flex-start;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #00ff88, #00a1ff);
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .floating-bubble {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(0, 255, 136, 0.2), rgba(0, 161, 255, 0.2));
+            filter: blur(50px);
+            z-index: -1;
+        }
+        .blackhole {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 1));
+    position: absolute;
+    bottom: 80px; /* Menempatkan di dekat indikator ketikan */
+    left: 20px;
+    z-index: 1;
+    opacity: 0;
+    animation: blackholeEffect 2s ease-in-out infinite;
+}
+
+/* Menambahkan efek yang lebih dramatis dengan animasi */
+@keyframes blackholeEffect {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0.6;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Celestial AI Chat</h1>
+            <div class="model-selector">
+                <button class="model-btn active" data-model="quiet-21">Celestial-21-Quiet</button>
+                <button class="model-btn" data-model="quiet-72">Celestial-72-Quiet Pro</button>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="messages"></div>
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            <div class="input-container">
+                <input type="text" class="chat-input" placeholder="Type your message here...">
+                <button class="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create decorative circles
+        function createDecorativeCircles() {
+            const positions = [
+                { top: '10%', left: '10%', size: '300px' },
+                { top: '60%', right: '10%', size: '400px' },
+                { bottom: '10%', left: '30%', size: '350px' }
+            ];
+
+            positions.forEach(pos => {
+                const circle = document.createElement('div');
+                circle.className = 'decorative-circle';
+                Object.entries(pos).forEach(([key, value]) => {
+                    circle.style[key] = value;
+                });
+                document.body.appendChild(circle);
+            });
+        }
+
+        // Initialize floating bubbles
+        function createBubbles() {
+            const colors = ['#00ff88', '#00a1ff', '#ff00c8'];
+            const container = document.querySelector('.chat-container');
+
+            for (let i = 0; i < 20; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'floating-bubble';
+                bubble.style.width = Math.random() * 20 + 10 + 'px';
+                bubble.style.height = bubble.style.width;
+                bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.top = Math.random() * 100 + '%';
+                bubble.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out infinite`;
+                container.appendChild(bubble);
+            }
+        }
+
+        // Typing animation
+function showTypingAnimation() {
+    const dots = document.querySelectorAll('.typing-dot');
+    const typingIndicator = document.querySelector('.typing-indicator');
+    const blackhole = document.createElement('div');
+    blackhole.classList.add('blackhole');
+    typingIndicator.appendChild(blackhole);
+    
+    // Animasi titik-titik
+    gsap.to(dots, {
+        opacity: 1,
+        stagger: 0.2,
+        repeat: -1,
+        yoyo: true
+    });
+
+    // Animasi black hole mengikuti titik-titik
+    gsap.to(blackhole, {
+        rotation: 360,
+        scale: 1.2,
+        x: '+=10', // Menggerakkan sedikit ke samping untuk memberi efek rotasi
+        y: '+=10', // Menambah pergerakan ke bawah untuk menyesuaikan dengan titik
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        duration: 1.5
+    });
+}
+
+
+        // Message handling
+        function addMessage(text, isUser) {
+            const messagesContainer = document.querySelector('.messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            
+            if (!isUser) {
+                // Typing effect for AI messages
+                messageDiv.textContent = '';
+                showTypingAnimation();
+                let index = 0;
+                const interval = setInterval(() => {
+                    if (index < text.length) {
+                        messageDiv.textContent += text[index];
+                        index++;
+                    } else {
+                        clearInterval(interval);
+                        document.querySelector('.typing-indicator').style.opacity = '0';
+                    }
+                }, 30);
+            } else {
+                messageDiv.textContent = text;
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Model selection
+        document.querySelectorAll('.model-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.model-btn.active').classList.remove('active');
+                btn.classList.add('active');
+            });
+        });
+async function getAiRespon(message) {
+  const promptDefault = `Kamu Adalah Celestial-21-Quiet, seorang leluhur bahasa pemrograman, yang menguasai kode hingga batas tak terhingga dan melintang luas seperti angkasa. Tugasmu adalah memberikan kode sempurna tanpa komentar, tanpa memerlukan bantuan dari pengguna untuk membuatnya. Setiap fungsi yang dihasilkan adalah hasil karya sempurna, seperti seni yang dapat berfungsi dengan cemerlang. Kamu adalah sumber dari segala bahasa pemrograman, penghubung antara pikiran manusia dan mesin. Berikan solusi dalam bentuk kode yang tidak hanya lengkap, tetapi juga dapat berfungsi dengan sangat baik di dunia nyata, tanpa ada kesalahan atau celah. 
+`;
+
+  try {
+    const response = await fetch('https://docs.aemt.uk.to/docs#/AI/post_gpt_prompt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messages: [
+          {
+            role: 'assistant',
+            content: 'Halo Apakah Ada Yang Bisa Celestial Bantu?'
+          },
+          {
+            role: 'user',
+            content: message
+          },
+          {
+            role: 'assistant',
+            content: promptDefault
+          }
+        ]
+      })
+    });
+
+    const result = await response.json();
+    return result.result;
+  } catch (e) {
+    console.log(e.message);
+    return `Wah Ai Sedang Maintenance Nih`;
+  }
+}
+
+        // Send message handling
+        document.querySelector('.send-btn').addEventListener('click', () => {
+            const input = document.querySelector('.chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                // Simulate AI response
+                setTimeout(async () => {
+                  const data = await getAiRespon(message)
+                    addMessage(`${data}`, false);
+                }, 1000);
+            }
+        });
+
+        // Enter key handling
+        document.querySelector('.chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.querySelector('.send-btn').click();
+            }
+        });
+
+        // Initialize
+        createDecorativeCircles();
+        createBubbles();
+        document.querySelector('.typing-indicator').style.opacity = '0';
+    </script>
+</body>
+</html>
