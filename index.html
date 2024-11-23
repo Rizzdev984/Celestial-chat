@@ -375,8 +375,8 @@ async function getAiRespon(message) {
     return result.result;
   } catch (e) {
     console.log(e.message);
-    return `Wah Ai Sedang Maintenance Nih`;
-      return e
+    return `Wah Ai Sedang Maintenance Nih: ${e}`;
+      
   }
 }
 
