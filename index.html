@@ -235,6 +235,19 @@
       chatArea.scrollTop = chatArea.scrollHeight;
     }
 
+function typeResponse(text, speed = 50) {
+  let index = 0;
+  chatOutput.textContent = ""; // Reset output
+  const interval = setInterval(() => {
+    if (index < text.length) {
+      chatOutput.textContent += text[index];
+      index++;
+    } else {
+      clearInterval(interval); // Hentikan ketika selesai
+    }
+  }, speed);
+}
+
     // Function to show loader
     function showLoader() {
       const loader = document.createElement('div');
@@ -256,7 +269,7 @@
 
     // Function to get a response from GPT-4
     async function getAIResponse(userMessage) {
-      const endpoint = `https://aemt.uk.to/openai?text=${userMessage}`;
+      const endpoint = `https://aemt.uk.to/v2/gpt4?text=${userMessage}`;
 
       const response = await fetch(endpoint)
       const data = await response.json();
@@ -299,7 +312,7 @@
       removeLoader();
 
       // Add AI response to chat
-      addChatBubble(aiResponse, 'ai');
+      typeResponse(aiResponse, 'ai');
     });
   </script>
 </body>
