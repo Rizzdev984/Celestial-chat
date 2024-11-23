@@ -41,9 +41,6 @@ cd celestial-ai-chat
 celestial-ai-chat/
 ├── index.html            # Halaman utama aplikasi
 ├── server.js             # File server Express.js
-├── public/               # Folder untuk file statis (CSS, JS, dll)
-│   ├── styles.css        # File CSS untuk desain aplikasi
-│   └── script.js         # File JavaScript untuk interaksi frontend
 ├── package.json          # File konfigurasi npm dan dependensi
 └── README.md             # Dokumentasi proyek
 ```
