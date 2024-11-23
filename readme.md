@@ -52,10 +52,11 @@ celestial-ai-chat/
 
 - License Di Hasilkan Oleh *MIT License*
 
-Kontak
+# Kontak
 Creator: Celestial
 Email: CelestialDev@gmail.com
 GitHub: https://github.com/Rizzdev984
 Jika Anda memiliki pertanyaan atau ingin berkolaborasi, jangan ragu untuk menghubungi kami!
 
-Terima kasih telah menggunakan Celestial AI Chat. Kami berharap aplikasi ini membantu Anda dalam memecahkan masalah pengkodean dan memberikan solusi AI yang bermanfaat.
+
+*Terima kasih telah menggunakan Celestial AI Chat. Kami berharap aplikasi ini membantu Anda dalam memecahkan masalah pengkodean dan memberikan solusi AI yang bermanfaat.*
